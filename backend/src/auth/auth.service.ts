@@ -23,6 +23,7 @@ export class AuthService {
     if (!user) throw new ForbiddenException('Credentials incorrect');
     const pwMatches = await argon.verify(user.password, body.password);
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+    delete user.password;
     return { jwt_token: await this.signToken(user.id, user.email), user: user };
   }
 
@@ -41,6 +42,7 @@ export class AuthService {
           roles: roles,
         },
       });
+      delete user.password;
       return {
         jwt_token: await this.signToken(user.id, user.email),
         user: user,

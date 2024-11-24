@@ -23,7 +23,7 @@ model User {
   lastname  String
   roles     Role[]
 
-  adresses   String[]
+  address   String?
   cart      Cart?
   orders    Order[]  
 }
@@ -33,8 +33,8 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  nom       String
-  prix      Float
+  name       String
+  price      Float
   stock     Int
   carts     CartProduct[]
   order      OrderProduct[]     
