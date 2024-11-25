@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useState } from "react";
 import { http } from "../utils/HttpClient";
 
+type Product = { id?: number; name: string; stock: number; price: number };
+
+export interface Cart {
+   id: number;
+   products: Product[];
+}
+
 export interface User {
-   id: string;
+   id: number;
    firstname: string;
    lastname: string;
    email: string;
@@ -12,12 +19,13 @@ export interface User {
 
 interface GlobalContextValueType {
    user: User | null;
+   cart: Cart | null;
 }
 
 interface GlobalContextType {
    value: GlobalContextValueType;
    setUser: (user: User) => void;
-   setValue: (value: GlobalContextValueType) => void;
+   setCart: (value: Cart) => void;
    clear: () => void;
 }
 
@@ -32,21 +40,25 @@ export const useGlobalContext = (): GlobalContextType => {
 };
 
 export const GlobalContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-   const [value, setValueState] = useState<GlobalContextValueType>({ user: null });
+   const [value, setValueState] = useState<GlobalContextValueType>({ user: null, cart: null });
    const [render, setRender] = useState<Boolean>(false);
 
-   const setValue = (value: GlobalContextValueType) => {
-      setValueState(value);
-   };
    const setUser = (user: User) => {
       setValueState((value) => {
          value.user = user;
          return value;
       });
    };
+   const setCart = (cart: Cart) => {
+      setValueState((value) => {
+         value.cart = cart;
+         return value;
+      });
+   };
    const clear = () => {
       setValueState({
          user: null,
+         cart: null,
       });
    };
 
@@ -55,6 +67,12 @@ export const GlobalContextProvider: React.FC<{ children: React.ReactNode }> = ({
          .get("/users/me")
          .then((response) => {
             const user = response?.data as User;
+            const isClient = user.roles.includes("CLIENT");
+            if (isClient) {
+               http.get("/carts/mine").then((response) => {
+                  setCart(response.data as Cart);
+               });
+            }
             setUser(user);
          })
          .finally(() => {
@@ -62,5 +80,5 @@ export const GlobalContextProvider: React.FC<{ children: React.ReactNode }> = ({
          });
    })();
 
-   if (render) return <GlobalContext.Provider value={{ value, setUser, setValue, clear }}>{children}</GlobalContext.Provider>;
+   if (render) return <GlobalContext.Provider value={{ value, setUser, setCart, clear }}>{children}</GlobalContext.Provider>;
 };

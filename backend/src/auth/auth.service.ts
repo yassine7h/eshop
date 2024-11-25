@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DBService } from 'src/db/db.service';
 import { SignupDTO, LoginDTO } from './dto';
 import * as argon from 'argon2';
-import { Role } from '@prisma/client';
+import { Cart, Role, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -42,6 +42,15 @@ export class AuthService {
           roles: roles,
         },
       });
+      if (roles.includes(Role.CLIENT)) {
+        const cart = await this.dbService.cart.create({
+          data: {
+            user: {
+              connect: { id: user.id },
+            },
+          },
+        });
+      }
       delete user.password;
       return {
         jwt_token: await this.signToken(user.id, user.email),

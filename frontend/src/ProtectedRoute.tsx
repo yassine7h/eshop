@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useGlobalContext } from "./contexts/GlobalContext";
-import { http } from "./utils/HttpClient";
 
 interface ProtectedRouteProps {
    roles: Role[];

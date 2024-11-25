@@ -1,11 +1,18 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../hooks/logoutHandler";
 import { useState, useEffect, useRef } from "react";
 import { BsPersonCircle } from "react-icons/bs";
+import { useGlobalContext } from "../contexts/GlobalContext";
 
-export default function Layout() {
+export default function Layout({ children }: React.PropsWithChildren<{}>) {
+   const { value } = useGlobalContext();
+   const navigate = useNavigate();
    const logout = useLogout();
-
+   const role = {
+      isAdmin: value.user?.roles.includes("ADMIN"),
+      isSeller: value.user?.roles.includes("SELLER"),
+      isClient: value.user?.roles.includes("CLIENT"),
+   };
    const [dropdownOpen, setDropdownOpen] = useState(false);
    const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -39,12 +46,12 @@ export default function Layout() {
             </div>
             <div className="flex gap-6 items-center">
                <div className="flex gap-3">
-                  <div className="hover:bg-blue-400 border-2 border-white bo px-4 py-2 flex items-center justify-center rounded-md font-semibold">
-                     <Link to="/shop">Shop</Link>
+                  <div
+                     onClick={() => navigate("/shop")}
+                     className="hover:bg-blue-400 border-2 cursor-pointer border-white bo px-4 py-2 flex items-center justify-center rounded-md font-semibold"
+                  >
+                     Shop
                   </div>
-                  {/* <div className="hover:bg-blue-400 border-2 border-white bo px-4 py-2 flex items-center justify-center rounded-md font-semibold">
-                     <Link to="/dashboard">Dashboard</Link>
-                  </div> */}
                </div>
                <div className="relative flex gap-4 items-center justify-center" ref={dropdownRef}>
                   <button onClick={toggleDropdown} className="focus:outline-none flex items-center gap-2">
@@ -58,15 +65,41 @@ export default function Layout() {
                         }}
                         className="dropdown-menu absolute right-0 top-[50px] mt-2 w-40 bg-white rounded-md shadow-lg text-gray-700 z-10"
                      >
-                        <li>
-                           <Link to="/dashboard" className="block px-4 py-2 rounded-md hover:bg-gray-200">
-                              Dashboard
-                           </Link>
-                        </li>
+                        {role.isClient && (
+                           <>
+                              <li>
+                                 <Link to="/cart" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                                    My Cart
+                                 </Link>
+                              </li>
+                              <li>
+                                 <Link to="/orders" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                                    My Orders
+                                 </Link>
+                              </li>
+                           </>
+                        )}
+                        {(role.isAdmin || role.isSeller) && (
+                           <li>
+                              <Link to="/dashboard" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                                 Dashboard
+                              </Link>
+                           </li>
+                        )}
                         <li>
                            <Link to="/myaccount" className="block px-4 py-2 rounded-md hover:bg-gray-200">
                               My Account
                            </Link>
+                        </li>
+                        <li>
+                           {/* <button
+                              onClick={() => {
+                                 console.log(JSON.stringify(value, null, 2));
+                              }}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                           >
+                              log context
+                           </button> */}
                         </li>
                         <li>
                            <button onClick={logoutHandler} className="block w-full text-left px-4 py-2 hover:bg-gray-200">
@@ -78,8 +111,8 @@ export default function Layout() {
                </div>
             </div>
          </nav>
-
-         <Outlet />
+         <main>{children}</main>
+         {/* <Outlet /> */}
       </div>
    );
 }

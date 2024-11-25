@@ -5,12 +5,13 @@ import { useForm } from "react-hook-form";
 
 type ProductType = { id?: number; name: string; stock: number; price: number };
 
-export default function AdminDashboardPage() {
+export default function ProductsDashboard() {
    const handleHttpError = useHttpErrorHandler();
 
    const [products, setProducts] = useState<ProductType[]>([]);
    const [showDeleteModal, setShowDeleteModal] = useState(false);
    const [showModifyModal, setShowModifyModal] = useState(false);
+   const [showAddModal, setShowAddModal] = useState(false);
    const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
 
    const { register, handleSubmit, reset } = useForm<ProductType>();
@@ -44,13 +45,27 @@ export default function AdminDashboardPage() {
          .then(() => {
             setShowModifyModal(false);
             fetchProducts();
+            closeModals();
          })
          .catch(handleHttpError);
    };
-
+   const handleAdd = (data: ProductType) => {
+      http
+         .post(`/products`, data)
+         .then(() => {
+            setShowModifyModal(false);
+            fetchProducts();
+            closeModals();
+         })
+         .catch(handleHttpError);
+   };
    const openDeleteModal = (product: ProductType | null) => {
       setSelectedProduct(product);
       setShowDeleteModal(true);
+   };
+   const openAddModal = () => {
+      setSelectedProduct(null);
+      setShowAddModal(true);
    };
 
    const openModifyModal = (product: ProductType | null) => {
@@ -64,10 +79,16 @@ export default function AdminDashboardPage() {
       setSelectedProduct(null);
       setShowDeleteModal(false);
       setShowModifyModal(false);
+      setShowAddModal(false);
    };
 
    return (
       <>
+         <div className="w-full flex justify-end mb-2">
+            <button className="px-4 py-2 rounded-md bg-green-500 text-white" onClick={openAddModal}>
+               Add
+            </button>
+         </div>
          <table className="w-full border-collapse border border-gray-200">
             <thead className="bg-gray-200">
                <tr>
@@ -159,6 +180,44 @@ export default function AdminDashboardPage() {
                         </button>
                         <button type="submit" className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">
                            Save Changes
+                        </button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         )}
+         {showAddModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+               <div className="bg-white p-6 rounded-md shadow-lg">
+                  <h2 className="text-xl font-bold mb-4">Modify Product</h2>
+                  <form onSubmit={handleSubmit(handleAdd)}>
+                     <div className="mb-4">
+                        <label className="block mb-2 font-semibold">Name</label>
+                        <input type="text" {...register("name", { required: "Name is required" })} className="w-full px-4 py-2 border rounded-md" />
+                     </div>
+                     <div className="mb-4">
+                        <label className="block mb-2 font-semibold">Price</label>
+                        <input
+                           type="number"
+                           step="0.01"
+                           {...register("price", { required: "Price is required", valueAsNumber: true })}
+                           className="w-full px-4 py-2 border rounded-md"
+                        />
+                     </div>
+                     <div className="mb-4">
+                        <label className="block mb-2 font-semibold">Stock</label>
+                        <input
+                           type="number"
+                           {...register("stock", { required: "Stock is required", valueAsNumber: true })}
+                           className="w-full px-4 py-2 border rounded-md"
+                        />
+                     </div>
+                     <div className="mt-4 flex justify-end">
+                        <button onClick={closeModals} className="mr-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">
+                           Cancel
+                        </button>
+                        <button type="submit" className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">
+                           Add
                         </button>
                      </div>
                   </form>

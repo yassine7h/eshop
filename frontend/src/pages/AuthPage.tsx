@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { http } from "../utils/HttpClient";
 import { useHttpErrorHandler } from "../hooks/httpErrorHandler";
-import { useGlobalContext } from "../contexts/GlobalContext";
+import { Cart, useGlobalContext, User } from "../contexts/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../ProtectedRoute";
+import { AxiosResponse } from "axios";
 
 interface LoginFormInputs {
    email: string;
@@ -24,7 +25,7 @@ type AuthFormInputs = LoginFormInputs & SignupFormInputs;
 
 export default function AuthPage() {
    const handleHttpError = useHttpErrorHandler();
-   const { setUser } = useGlobalContext();
+   const { setUser, setCart } = useGlobalContext();
    const navigate = useNavigate();
 
    const [isLogin, setIsLogin] = useState(true);
@@ -38,28 +39,31 @@ export default function AuthPage() {
    const onSubmit: SubmitHandler<AuthFormInputs> = (data: AuthFormInputs) => {
       if (isLogin) {
          const formdata: LoginFormInputs = { email: data.email, password: data.password };
-         http
-            .post("/auth/login", formdata)
-            .then((response) => {
-               const data = response?.data as any;
-               http.setToken(data.jwt_token);
-               setUser(data.user);
-               navigate("/dashboard");
-            })
-            .catch(handleHttpError);
+         http.post("/auth/login", formdata).then(handleAath).catch(handleHttpError);
       } else {
          const formdata: SignupFormInputs = data as SignupFormInputs;
          formdata.roles = [formdata.role.toUpperCase() as Role];
-         console.log(formdata);
+         http.post("/auth/signup", formdata).then(handleAath).catch(handleHttpError);
+      }
+   };
+   const handleAath = (response: AxiosResponse<unknown, any>) => {
+      const data = response?.data as any;
+      const user: User = data.user;
+      const isClient = user.roles.includes("CLIENT");
+      http.setToken(data.jwt_token);
+      if (isClient) {
          http
-            .post("/auth/signup", formdata)
+            .get("/carts/mine")
             .then((response) => {
-               const data = response?.data as any;
-               http.setToken(data.jwt_token);
-               setUser(data.user);
-               navigate("/dashboard");
+               setCart(response.data as Cart);
             })
-            .catch(handleHttpError);
+            .finally(() => {
+               setUser(user);
+               navigate("/shop");
+            });
+      } else {
+         setUser(user);
+         navigate("/dashboard");
       }
    };
    return (

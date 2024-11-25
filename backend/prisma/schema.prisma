@@ -1,12 +1,10 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 enum Role {
   ADMIN
   CLIENT
@@ -23,7 +21,6 @@ model User {
   lastname  String
   roles     Role[]
 
-  address   String?
   cart      Cart?
   orders    Order[]  
 }
@@ -66,12 +63,16 @@ enum OrderStatus {
   RESERVED
   VALIDATED
   CANCELED
+  REJECTED
 }
 model Order {
   id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
+
   userId    Int
-  cartId    Int
-  statut    OrderStatus
+  address   String
+  status    OrderStatus @default(RESERVED)
   products  OrderProduct[]
   user      User     @relation(fields: [userId], references: [id])
 }
