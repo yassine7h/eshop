@@ -92,14 +92,14 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                            </Link>
                         </li>
                         <li>
-                           {/* <button
+                           <button
                               onClick={() => {
                                  console.log(JSON.stringify(value, null, 2));
                               }}
                               className="block w-full text-left px-4 py-2 hover:bg-gray-200"
                            >
                               log context
-                           </button> */}
+                           </button>
                         </li>
                         <li>
                            <button onClick={logoutHandler} className="block w-full text-left px-4 py-2 hover:bg-gray-200">

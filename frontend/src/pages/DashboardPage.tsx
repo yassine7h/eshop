@@ -11,7 +11,7 @@ export default function DashboardPage() {
    const [tab, setTab] = useState("orders");
    return (
       <Layout>
-         <div className="w-screen bg-gray-100 flex flex-col items-center p-8">
+         <div className="w-full bg-gray-100 flex flex-col items-center p-8">
             <div className="bg-white rounded-md shadow-lg w-full max-w-5xl p-6">
                {isAdmin ? (
                   <>

@@ -68,7 +68,7 @@ export default function OrdersPage() {
 
    return (
       <Layout>
-         <div className="w-screen bg-gray-100 flex flex-col items-center p-8">
+         <div className="w-full bg-gray-100 flex flex-col items-center p-8">
             <div className="bg-white rounded-md shadow-lg w-full max-w-5xl p-6">
                <h2 className="text-xl font-semibold mb-4">My Orders</h2>
                <table className="w-full border-collapse border border-gray-200">
@@ -150,38 +150,40 @@ export default function OrdersPage() {
                )}
                {showProductsDetailsModal && (
                   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                     <div className="bg-white absolute max-h-[90vh] p-6 rounded-md shadow-lg w-[400px]">
-                        <h2 className="text-xl font-bold mb-4">Order #{selectedOrder?.id}</h2>
-                        <h3 className="text-lg font-semibold mb-3">Products</h3>
+                     <div className="bg-white max-h-[90vh] p-6 rounded-md shadow-lg w-[400px]">
                         <div>
-                           {selectedOrder?.products.map((p) => (
-                              <div key={p.id} className="flex items-start border-t-2">
-                                 <div className="font-semibold p-3 w-[50px]">#{p.id}</div>
-                                 <div className="p-3 border-l-2 w-full">
-                                    <div className="flex gap-2 mb-2">
-                                       <div className="font-semibold">Name</div>
-                                       <div className="">{p.name}</div>
-                                    </div>
-                                    <div className="flex gap-2 mb-2">
-                                       <div className="font-semibold">Price</div>
-                                       <div className="">{p.price}</div>
-                                    </div>
-                                    <div className="flex gap-2 mb-2">
-                                       <div className="font-semibold">Stock</div>
-                                       <div className="">{p.stock}</div>
-                                    </div>
-                                    <div className="flex gap-2 mb-2">
-                                       <div className="font-semibold">Ordered quantity</div>
-                                       <div className="">{p.quantity}</div>
-                                    </div>
-                                    <div className="flex gap-2 mb-2 justify-end">
-                                       <div className="font-semibold">Total</div>
-                                       <div className="">${p.quantity * p.price}</div>
+                           <h2 className="text-xl font-bold mb-4">Order #{selectedOrder?.id}</h2>
+                           <h3 className="text-lg font-semibold mb-3">Products</h3>
+                           <div className="w-full max-h-[60vh] h-fit overflow-y-scroll">
+                              {selectedOrder?.products.map((p) => (
+                                 <div key={p.id} className="flex items-start border-t-2">
+                                    <div className="font-semibold p-3 w-[50px]">#{p.id}</div>
+                                    <div className="p-3 border-l-2 w-full">
+                                       <div className="flex gap-2 mb-2">
+                                          <div className="font-semibold">Name</div>
+                                          <div className="">{p.name}</div>
+                                       </div>
+                                       <div className="flex gap-2 mb-2">
+                                          <div className="font-semibold">Price</div>
+                                          <div className="">{p.price}</div>
+                                       </div>
+                                       <div className="flex gap-2 mb-2">
+                                          <div className="font-semibold">Stock</div>
+                                          <div className="">{p.stock}</div>
+                                       </div>
+                                       <div className="flex gap-2 mb-2">
+                                          <div className="font-semibold">Ordered quantity</div>
+                                          <div className="">{p.quantity}</div>
+                                       </div>
+                                       <div className="flex gap-2 mb-2 justify-end">
+                                          <div className="font-semibold">Total</div>
+                                          <div className="">${p.quantity * p.price}</div>
+                                       </div>
                                     </div>
                                  </div>
-                              </div>
-                           ))}
-                           <div className="mt-4 flex justify-end">
+                              ))}
+                           </div>
+                           <div className="mt-4 flex w-full justify-end">
                               <button onClick={closeProductsDetailsModal} className="mr-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">
                                  Close
                               </button>
@@ -189,7 +191,7 @@ export default function OrdersPage() {
                         </div>
                      </div>
                   </div>
-               )}{" "}
+               )}
             </div>
          </div>
       </Layout>

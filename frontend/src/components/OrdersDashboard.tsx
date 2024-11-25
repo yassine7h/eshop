@@ -167,39 +167,41 @@ export default function OrdersDashboard() {
                <div className="bg-white absolute max-h-[90vh] p-6 rounded-md shadow-lg w-[400px]">
                   <h2 className="text-xl font-bold mb-4">Order #{selectedOrder?.id}</h2>
                   <h3 className="text-lg font-semibold mb-3">Products</h3>
-                  <div>
-                     {selectedOrder?.products.map((p) => (
-                        <div key={p.id} className="flex items-start border-t-2">
-                           <div className="font-semibold p-3 w-[50px]">#{p.id}</div>
-                           <div className="p-3 border-l-2 w-full">
-                              <div className="flex gap-2 mb-2">
-                                 <div className="font-semibold">Name</div>
-                                 <div className="">{p.name}</div>
-                              </div>
-                              <div className="flex gap-2 mb-2">
-                                 <div className="font-semibold">Price</div>
-                                 <div className="">{p.price}</div>
-                              </div>
-                              <div className="flex gap-2 mb-2">
-                                 <div className="font-semibold">Stock</div>
-                                 <div className="">{p.stock}</div>
-                              </div>
-                              <div className="flex gap-2 mb-2">
-                                 <div className="font-semibold">Ordered quantity</div>
-                                 <div className="">{p.quantity}</div>
-                              </div>
-                              <div className="flex gap-2 mb-2 justify-end">
-                                 <div className="font-semibold">Total</div>
-                                 <div className="">${p.quantity * p.price}</div>
+                  <div className="w-full max-h-[60vh] h-fit overflow-y-scroll">
+                     <div>
+                        {selectedOrder?.products.map((p) => (
+                           <div key={p.id} className="flex items-start border-t-2">
+                              <div className="font-semibold p-3 w-[50px]">#{p.id}</div>
+                              <div className="p-3 border-l-2 w-full">
+                                 <div className="flex gap-2 mb-2">
+                                    <div className="font-semibold">Name</div>
+                                    <div className="">{p.name}</div>
+                                 </div>
+                                 <div className="flex gap-2 mb-2">
+                                    <div className="font-semibold">Price</div>
+                                    <div className="">{p.price}</div>
+                                 </div>
+                                 <div className="flex gap-2 mb-2">
+                                    <div className="font-semibold">Stock</div>
+                                    <div className="">{p.stock}</div>
+                                 </div>
+                                 <div className="flex gap-2 mb-2">
+                                    <div className="font-semibold">Ordered quantity</div>
+                                    <div className="">{p.quantity}</div>
+                                 </div>
+                                 <div className="flex gap-2 mb-2 justify-end">
+                                    <div className="font-semibold">Total</div>
+                                    <div className="">${p.quantity * p.price}</div>
+                                 </div>
                               </div>
                            </div>
-                        </div>
-                     ))}
-                     <div className="mt-4 flex justify-end">
-                        <button onClick={closeProductsDetailsModal} className="mr-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">
-                           Close
-                        </button>
+                        ))}
                      </div>
+                  </div>
+                  <div className="mt-4 flex w-full justify-end">
+                     <button onClick={closeProductsDetailsModal} className="mr-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">
+                        Close
+                     </button>
                   </div>
                </div>
             </div>

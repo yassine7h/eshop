@@ -66,6 +66,7 @@ export class CartsService {
           include: {
             product: true,
           },
+          orderBy: { productId: 'asc' },
         },
       },
     });
