@@ -17,7 +17,6 @@ interface SignupFormInputs {
    password: string;
    firstname: string;
    lastname: string;
-   role: String;
    roles: Role[];
 }
 
@@ -41,8 +40,10 @@ export default function AuthPage() {
          const formdata: LoginFormInputs = { email: data.email, password: data.password };
          http.post("/auth/login", formdata).then(handleAath).catch(handleHttpError);
       } else {
-         const formdata: SignupFormInputs = data as SignupFormInputs;
-         formdata.roles = [formdata.role.toUpperCase() as Role];
+         const formdata: SignupFormInputs = {
+            ...data,
+            roles: data.roles.map((role) => role.toUpperCase() as Role),
+         };
          http.post("/auth/signup", formdata).then(handleAath).catch(handleHttpError);
       }
    };
@@ -113,24 +114,38 @@ export default function AuthPage() {
                         />
                         {errors.lastname && <p className="text-red-500 text-sm mt-1">{errors.lastname.message}</p>}
                      </div>
-
-                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Role</label>
-                        <div className="mt-1 flex space-x-4">
+                     <div className="w-full">
+                        <label className="block text-sm font-medium text-gray-700">Roles</label>
+                        <div className="mt-1 flex border-2 rounded px-4 py-3 space-x-4 text-sm w-full justify-between">
                            <label className="flex items-center">
-                              <input type="radio" value="CLIENT" {...register("role", { required: "Role is required" })} className="mr-2" />
+                              <input
+                                 type="checkbox"
+                                 value="CLIENT"
+                                 {...register("roles", { required: "At least one role is required" })}
+                                 className="mr-2"
+                              />
                               Client
                            </label>
                            <label className="flex items-center">
-                              <input type="radio" value="SELLER" {...register("role", { required: "Role is required" })} className="mr-2" />
+                              <input
+                                 type="checkbox"
+                                 value="SELLER"
+                                 {...register("roles", { required: "At least one role is required" })}
+                                 className="mr-2"
+                              />
                               Seller
                            </label>
                            <label className="flex items-center">
-                              <input type="radio" value="ADMIN" {...register("role", { required: "Role is required" })} className="mr-2" />
+                              <input
+                                 type="checkbox"
+                                 value="ADMIN"
+                                 {...register("roles", { required: "At least one role is required" })}
+                                 className="mr-2"
+                              />
                               Admin
                            </label>
                         </div>
-                        {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
+                        {errors.roles && <p className="text-red-500 text-sm mt-1">{errors.roles.message}</p>}
                      </div>
                   </>
                )}

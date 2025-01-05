@@ -30,9 +30,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
             setDropdownOpen(false);
          }
       };
-
       document.addEventListener("mousedown", handleClickOutside);
-
       return () => {
          document.removeEventListener("mousedown", handleClickOutside);
       };
@@ -91,7 +89,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                               My Account
                            </Link>
                         </li>
-                        <li>
+                        {/* <li>
                            <button
                               onClick={() => {
                                  console.log(JSON.stringify(value, null, 2));
@@ -100,7 +98,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                            >
                               log context
                            </button>
-                        </li>
+                        </li> */}
                         <li>
                            <button onClick={logoutHandler} className="block w-full text-left px-4 py-2 hover:bg-gray-200">
                               Logout
