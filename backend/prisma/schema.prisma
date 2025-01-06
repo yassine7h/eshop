@@ -1,17 +1,20 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 enum Role {
   ADMIN
   CLIENT
   SELLER
 }
+
 model User {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -21,8 +24,9 @@ model User {
   lastname  String
   roles     Role[]
 
-  cart      Cart?
-  orders    Order[]  
+  cart    Cart?
+  orders  Order[]
+  reviews Review[]
 }
 
 model Product {
@@ -30,11 +34,12 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name       String
-  price      Float
-  stock     Int
-  carts     CartProduct[]
-  order      OrderProduct[]     
+  name    String
+  price   Float
+  stock   Int
+  carts   CartProduct[]
+  order   OrderProduct[]
+  reviews Review[]
 }
 
 model Cart {
@@ -42,21 +47,21 @@ model Cart {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    Int      @unique
-  user      User     @relation(fields: [userId], references: [id])
-  products  CartProduct[]
+  userId   Int           @unique
+  user     User          @relation(fields: [userId], references: [id])
+  products CartProduct[]
 }
 
 model CartProduct {
   cartId    Int
   productId Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  updatedAt DateTime @updatedAt
 
-  quantity  Int
+  quantity Int
 
-  cart      Cart     @relation(fields: [cartId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@id([cartId, productId])
 }
@@ -67,28 +72,39 @@ enum OrderStatus {
   CANCELED
   REJECTED
 }
+
 model Order {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  updatedAt DateTime @updatedAt
 
-  userId    Int
-  address   String
-  status    OrderStatus @default(RESERVED)
-  products  OrderProduct[]
-  user      User     @relation(fields: [userId], references: [id])
+  userId   Int
+  address  String
+  status   OrderStatus    @default(RESERVED)
+  products OrderProduct[]
+  user     User           @relation(fields: [userId], references: [id])
 }
+
 model OrderProduct {
-  orderId    Int
+  orderId   Int
   productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  quantity Int
 
-  quantity  Int
-
-  order      Order     @relation(fields: [orderId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@id([orderId, productId])
+}
+
+model Review {
+  id         Int     @id @default(autoincrement())
+  rating     Int
+  reviewText String
+  userId     Int
+  productId  Int
+  user       User    @relation(fields: [userId], references: [id])
+  product    Product @relation(fields: [productId], references: [id])
 }

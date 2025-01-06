@@ -49,4 +49,9 @@ export class ProductsController {
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.delete(id);
   }
+  @Get(':id/reviews')
+  getReviews(@Param('id') id: string) {
+    return this.productsService.getReviews(Number(id));
+  }
+
 }

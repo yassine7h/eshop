@@ -34,4 +34,14 @@ export class ProductsService {
   delete(id: number) {
     return this.db.product.delete({ where: { id } });
   }
+
+  getReviews(productId: number) {
+    return this.db.review.findMany({
+      where: { productId },
+      include: {
+        user: { select: { firstname: true } }, // Optionally include user info
+      },
+    });
+  }
+  
 }
