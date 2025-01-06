@@ -72,6 +72,7 @@ Permet d'accéder facilement aux informations de l'utilisateur connecté :
 
 - Un administrateur crée un produit en définissant son stock disponible.
 - Un vendeur (ou l'administration) valide les commandes passées par des clients.
+- Le client peut noter un produit et laisser un commenataire.
 
 ## Configuration de l'environnement de développement
 
