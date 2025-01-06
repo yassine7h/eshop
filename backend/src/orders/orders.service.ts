@@ -42,7 +42,7 @@ export class OrdersService {
     return allOrders.filter((order) => order.userId === user.id);
   }
 
-  async updateStatus(id: number, status: OrderStatus) {
+  /*async updateStatus(id: number, status: OrderStatus) {
     const order = this.db.order.findUnique({
       where: { id },
     });
@@ -51,7 +51,40 @@ export class OrdersService {
       where: { id },
       data: { status },
     });
-  }
+  }*/
+
+    async updateStatus(id: number, status: OrderStatus) {
+      const order = await this.db.order.findUnique({
+        where: { id },
+        include: { products: { include: { product: true } } }, // Include products
+      });
+    
+      if (!order) throw new NotFoundException('Order not Found');
+    
+      if (status === OrderStatus.VALIDATED) {
+        // Update product quantities in the database
+        for (const orderProduct of order.products) {
+          const product = orderProduct.product;
+          if (product.stock < orderProduct.quantity) {
+            throw new NotAcceptableException(
+              `Insufficient stock for product: ${product.name}`,
+            );
+          }
+    
+          // Decrement stock
+          await this.db.product.update({
+            where: { id: product.id },
+            data: { stock: product.stock - orderProduct.quantity },
+          });
+        }
+      }
+    
+      return this.db.order.update({
+        where: { id },
+        data: { status },
+      });
+    }
+      
 
   async cancelOrder(id: number) {
     const order = await this.db.order.findUnique({
