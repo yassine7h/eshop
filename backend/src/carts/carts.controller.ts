@@ -12,8 +12,6 @@ import { GetUser } from 'src/auth/getuser.decorator';
 import { AuthRoles } from 'src/auth/roles.guard';
 import { CartsService } from './carts.service';
 
-type ProductQte = { qte: number; productId: number };
-
 @Controller('carts')
 export class CartsController {
   constructor(private cartsService: CartsService) {}

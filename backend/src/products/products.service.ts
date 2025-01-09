@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DBService } from 'src/db/db.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { PicturesService } from 'src/pictures/pictures.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(private db: DBService) {}
+  constructor(
+    private db: DBService,
+    private picturesService: PicturesService,
+  ) {}
 
   getAll() {
     return this.db.product.findMany();
@@ -14,17 +18,29 @@ export class ProductsService {
     return this.db.product.findUnique({ where: { id } });
   }
 
-  create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto) {
+    const pictureUrl = await this.picturesService.save(
+      `${createProductDto.name}_${Date.now()}`,
+      createProductDto.picture,
+    );
     return this.db.product.create({
       data: {
         name: createProductDto.name,
         price: createProductDto.price,
         stock: createProductDto.stock,
+        picture: pictureUrl,
       },
     });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    if (updateProductDto.picture) {
+      const pictureUrl = await this.picturesService.save(
+        `${updateProductDto.name}_${Date.now()}`,
+        updateProductDto.picture,
+      );
+      updateProductDto.picture = pictureUrl;
+    }
     return this.db.product.update({
       where: { id },
       data: updateProductDto,
@@ -39,9 +55,8 @@ export class ProductsService {
     return this.db.review.findMany({
       where: { productId },
       include: {
-        user: { select: { firstname: true } }, // Optionally include user info
+        user: { select: { firstname: true, lastname: true, email: true } },
       },
     });
   }
-  
 }

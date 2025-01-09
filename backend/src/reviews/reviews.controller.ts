@@ -1,13 +1,4 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-  } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto';
 
@@ -17,13 +8,11 @@ export class ReviewsController {
 
   @Get(':productId')
   findAll(@Param('productId') productId: string) {
-    return this.reviewsService.findByProductId(+productId); // Assuming you fetch by productId and it's numeric
+    return this.reviewsService.findByProductId(+productId);
   }
 
   @Post()
   create(@Body() createReviewDto: CreateReviewDto) {
-    console.log(createReviewDto);
     return this.reviewsService.create(createReviewDto);
   }
-
 }

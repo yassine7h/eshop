@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -26,9 +27,35 @@ export class CartsService {
       throw new ForbiddenException(
         'You are not Authorized to update this card',
       );
+    const productDetails = await this.db.product.findUnique({
+      where: { id: product.productId },
+    });
+
+    if (!productDetails) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const requiredQuantity = product.quantity;
+    let existingQuantityInCart = 0;
+
     const existingProduct = cart.products.find(
       (cartProduct) => cartProduct.productId === product.productId,
     );
+
+    if (existingProduct) {
+      existingQuantityInCart = existingProduct.quantity;
+    }
+
+    const newQuantity = product.append
+      ? existingQuantityInCart + requiredQuantity
+      : requiredQuantity;
+
+    if (newQuantity > productDetails.stock) {
+      throw new BadRequestException(
+        `Insufficient stock. Only ${productDetails.stock} items are available.`,
+      );
+    }
+
     if (existingProduct) {
       await this.db.cartProduct.update({
         where: {
@@ -38,8 +65,7 @@ export class CartsService {
           },
         },
         data: {
-          quantity:
-            product.quantity + (product.append ? existingProduct.quantity : 0),
+          quantity: newQuantity,
         },
       });
     } else {
@@ -47,10 +73,17 @@ export class CartsService {
         data: {
           cartId: cart.id,
           productId: product.productId,
-          quantity: product.quantity,
+          quantity: requiredQuantity,
         },
       });
     }
+
+    await this.db.product.update({
+      where: { id: product.productId },
+      data: {
+        stock: productDetails.stock - requiredQuantity,
+      },
+    });
     return await this.db.cart.findUnique({
       where: { id: cart.id },
       include: { products: { include: { product: true } } },
@@ -84,8 +117,29 @@ export class CartsService {
       throw new ForbiddenException(
         'You are not Authorized to update this card',
       );
+    const existingProduct = cart.products.find(
+      (cartProduct) => cartProduct.productId === productId,
+    );
+
+    if (!existingProduct) {
+      throw new NotFoundException('Product not found in the cart');
+    }
+    const quantityInCart = existingProduct.quantity;
     await this.db.cartProduct.delete({
       where: { cartId_productId: { productId: productId, cartId: cart.id } },
+    });
+    const product = await this.db.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    await this.db.product.update({
+      where: { id: productId },
+      data: {
+        stock: product.stock + quantityInCart,
+      },
     });
   }
 }

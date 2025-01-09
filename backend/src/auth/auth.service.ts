@@ -32,15 +32,17 @@ export class AuthService {
     const roles: Role[] = Array.isArray(body.roles)
       ? body.roles
       : JSON.parse(body.roles);
+    const data: any = {
+      email: body.email,
+      password: hashedPassword,
+      firstname: body.firstname,
+      lastname: body.lastname,
+      roles: roles,
+    };
+    if (roles.includes(Role.CLIENT)) data.address = body.address;
     try {
       const user = await this.dbService.user.create({
-        data: {
-          email: body.email,
-          password: hashedPassword,
-          firstname: body.firstname,
-          lastname: body.lastname,
-          roles: roles,
-        },
+        data: data,
       });
       if (roles.includes(Role.CLIENT)) {
         const cart = await this.dbService.cart.create({

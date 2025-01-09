@@ -7,7 +7,6 @@ export class ReviewsService {
   constructor(private readonly db: DBService) {}
 
   create(createReviewDto: CreateReviewDto) {
-    console.log(createReviewDto);
     return this.db.review.create({
       data: {
         productId: createReviewDto.productId,
@@ -24,4 +23,3 @@ export class ReviewsService {
     });
   }
 }
-
