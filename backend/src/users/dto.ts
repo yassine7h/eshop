@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
   @IsString()
@@ -8,5 +8,6 @@ export class UpdateUserDto {
   @IsString()
   lastname?: string;
   @IsString()
+  @IsOptional()
   address?: string;
 }
