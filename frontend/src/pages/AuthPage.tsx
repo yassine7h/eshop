@@ -17,6 +17,7 @@ interface SignupFormInputs {
    password: string;
    firstname: string;
    lastname: string;
+   address: string;
    roles: Role[];
 }
 
@@ -32,8 +33,11 @@ export default function AuthPage() {
    const {
       register,
       handleSubmit,
+      watch,
       formState: { errors },
    } = useForm<AuthFormInputs>();
+   const watchedRoles = watch("roles", []);
+   const isClientRoleSelected = watchedRoles?.includes("CLIENT");
 
    const onSubmit: SubmitHandler<AuthFormInputs> = (data: AuthFormInputs) => {
       if (isLogin) {
@@ -67,6 +71,7 @@ export default function AuthPage() {
          navigate("/dashboard");
       }
    };
+
    return (
       <div className="w-screen h-screen flex justify-center items-center bg-gray-100">
          <div className="p-8 bg-white border rounded-md shadow-lg w-96">
@@ -147,6 +152,17 @@ export default function AuthPage() {
                         </div>
                         {errors.roles && <p className="text-red-500 text-sm mt-1">{errors.roles.message}</p>}
                      </div>
+                     {isClientRoleSelected && (
+                        <div>
+                           <label className="block text-sm font-medium text-gray-700">Address</label>
+                           <input
+                              type="text"
+                              {...register("address", { required: "Address is required" })}
+                              className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
+                           />
+                           {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+                        </div>
+                     )}
                   </>
                )}
 

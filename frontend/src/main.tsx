@@ -11,6 +11,7 @@ import MyAccountPage from "./pages/MyAccountPage.tsx";
 import ShopPage from "./pages/ShopPage.tsx";
 import CartPage from "./pages/CartPage.tsx";
 import OrdersPage from "./pages/OrdersPage.tsx";
+import ProductPage from "./pages/ProductPage.tsx";
 
 const router = createBrowserRouter([
    {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
    {
       path: "/shop",
       element: <ProtectedRoute roles={["ADMIN", "SELLER", "CLIENT"]} component={ShopPage} />,
+   },
+   {
+      path: "/product/:id",
+      element: <ProtectedRoute roles={["ADMIN", "SELLER", "CLIENT"]} component={ProductPage} />,
    },
    {
       path: "/cart",

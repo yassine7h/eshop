@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { http } from "../utils/HttpClient";
 import { useHttpErrorHandler } from "../hooks/httpErrorHandler";
 import { useSnackbar } from "notistack";
+import { useGlobalContext } from "../contexts/GlobalContext";
 type CartProduct = {
    id: number;
    quantity: number;
@@ -11,6 +12,7 @@ type CartProduct = {
       id: number;
       name: string;
       price: number;
+      picture: string;
    };
 };
 type Cart = {
@@ -20,10 +22,12 @@ type Cart = {
 
 export default function CartPage() {
    const { enqueueSnackbar } = useSnackbar();
+   const { value } = useGlobalContext();
    const [cart, setCart] = useState<Cart | null>(null);
-   const [address, setAddress] = useState<string>("");
+   const [address, setAddress] = useState<string>(value.user?.address || "");
    const handleHttpError = useHttpErrorHandler();
    const [overallTotal, setOverallTotal] = useState<number>(0);
+   const PICTURES_URL = import.meta.env.VITE_PICTURES_URL;
 
    useEffect(() => {
       fetchCart();
@@ -57,9 +61,8 @@ export default function CartPage() {
    };
 
    const updateQuantity = (productId: number, newQuantity: number) => {
-      if (newQuantity <= 0) return;
       http
-         .post(`/carts/${cart?.id}`, { quantity: newQuantity, productId: productId, append: false })
+         .post(`/carts/${cart?.id}`, { quantity: newQuantity, productId: productId, append: true })
          .then(() => {
             fetchCart();
          })
@@ -92,6 +95,7 @@ export default function CartPage() {
                   <table className="w-full border-collapse border border-gray-300 mb-4">
                      <thead className="bg-gray-200">
                         <tr>
+                           <th className="border border-gray-300 px-4 py-2 text-left w-[100px]"></th>
                            <th className="border border-gray-300 px-4 py-2 text-left">Product</th>
                            <th className="border border-gray-300 px-4 py-2 text-center">Quantity</th>
                            <th className="border border-gray-300 px-4 py-2 text-right">Unit Price</th>
@@ -102,14 +106,31 @@ export default function CartPage() {
                      <tbody>
                         {cart.products.map((item) => (
                            <tr key={item.product.id} className="hover:bg-gray-100">
+                              <td className="border border-gray-300 px-4 py-2">
+                                 <div className="bg-gray-500 w-[100px]">
+                                    <img src={`${PICTURES_URL}${item.product.picture}`} alt="" />
+                                 </div>
+                              </td>
                               <td className="border border-gray-300 px-4 py-2">{item.product.name}</td>
-                              <td className="border border-gray-300 px-4 py-2 text-center">
-                                 <input
-                                    type="text"
-                                    value={item.quantity}
-                                    onChange={(e) => updateQuantity(item.product.id, parseInt(e.target.value))}
-                                    className="w-16 border rounded-md text-center"
-                                 />
+                              <td className="border border-gray-300 px-4 py-2">
+                                 <div className="flex justify-between items-center">
+                                    <button
+                                       className="rounded-md w-7 h-8 bg-blue-500 text-white text-center font-semibold hover:bg-blue-600"
+                                       onClick={() => {
+                                          if (item.quantity == 1) return;
+                                          updateQuantity(item.product.id, -1);
+                                       }}
+                                    >
+                                       -
+                                    </button>
+                                    <div>{item.quantity}</div>
+                                    <button
+                                       className="rounded-md w-7 h-8 bg-blue-500 text-white text-center font-semibold hover:bg-blue-600"
+                                       onClick={() => updateQuantity(item.product.id, 1)}
+                                    >
+                                       +
+                                    </button>
+                                 </div>
                               </td>
                               <td className="border border-gray-300 px-4 py-2 text-right">${item.product.price.toFixed(2)}</td>
                               <td className="border border-gray-300 px-4 py-2 text-right">${(item.quantity * item.product.price).toFixed(2)}</td>
@@ -123,14 +144,14 @@ export default function CartPage() {
                      </tbody>
                   </table>
 
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex justify-between items-start mb-6">
                      <div>
                         <label className="block mb-2 font-semibold">Address</label>
                         <input
                            type="text"
                            value={address}
                            onChange={(e) => setAddress(e.target.value)}
-                           className="w-full px-4 py-2 border rounded-md"
+                           className="min-w-[500px] px-4 py-2 border rounded-md"
                         />
                      </div>
                      <div>

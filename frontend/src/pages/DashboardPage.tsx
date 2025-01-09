@@ -12,14 +12,15 @@ export default function DashboardPage() {
    return (
       <Layout>
          <div className="w-full bg-gray-100 flex flex-col items-center p-8">
-            <div className="bg-white rounded-md shadow-lg w-full max-w-5xl p-6">
+            <div className="bg-white rounded-md shadow-lg w-full max-w-5xl p-6 ">
                {isAdmin ? (
                   <>
-                     <div className="flex items-center gap-3 mb-4">
+                     <div className="flex items-center gap-1 mb-6 border-b">
                         <button onClick={() => setTab("orders")}>
                            <h2
                               className={
-                                 (tab === "orders" ? "border-blue-500" : " border-white") + " border-b-2 text-xl text-blue-500 px-2 font-semibold"
+                                 (tab === "orders" ? "border-blue-500 " : " border-white") +
+                                 " border-b text-xl text-blue-500 px-4 py-2 font-semibold hover:border-blue-500"
                               }
                            >
                               Orders
@@ -28,7 +29,8 @@ export default function DashboardPage() {
                         <button onClick={() => setTab("products")}>
                            <h2
                               className={
-                                 (tab === "products" ? "border-blue-500" : " border-white") + " border-b-2 text-xl text-blue-500 px-2 font-semibold"
+                                 (tab === "products" ? "border-blue-500 " : " border-white") +
+                                 " border-b text-xl text-blue-500 px-4 py-2 font-semibold hover:border-blue-500"
                               }
                            >
                               Products

@@ -50,6 +50,12 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                   >
                      Shop
                   </div>
+                  <div
+                     onClick={() => navigate("/cart")}
+                     className="hover:bg-blue-400 border-2 cursor-pointer border-white bo px-4 py-2 flex items-center justify-center rounded-md font-semibold"
+                  >
+                     Cart
+                  </div>
                </div>
                <div className="relative flex gap-4 items-center justify-center" ref={dropdownRef}>
                   <button onClick={toggleDropdown} className="focus:outline-none flex items-center gap-2">
@@ -61,17 +67,17 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                         onClick={() => {
                            setDropdownOpen(false);
                         }}
-                        className="dropdown-menu absolute right-0 top-[50px] mt-2 w-40 bg-white rounded-md shadow-lg text-gray-700 z-10"
+                        className="dropdown-menu border absolute right-0 top-[50px] mt-2 w-40 bg-white rounded-md shadow-lg text-gray-700 z-10"
                      >
                         {role.isClient && (
                            <>
-                              <li>
-                                 <Link to="/cart" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                              {/* <li>
+                                 <Link to="/cart" className="font-semibold block px-4 py-2 rounded-md hover:bg-gray-200">
                                     My Cart
                                  </Link>
-                              </li>
+                              </li> */}
                               <li>
-                                 <Link to="/orders" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                                 <Link to="/orders" className="font-semibold block px-4 py-2 rounded-md hover:bg-gray-200">
                                     My Orders
                                  </Link>
                               </li>
@@ -79,13 +85,13 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                         )}
                         {(role.isAdmin || role.isSeller) && (
                            <li>
-                              <Link to="/dashboard" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                              <Link to="/dashboard" className="font-semibold block px-4 py-2 rounded-md hover:bg-gray-200">
                                  Dashboard
                               </Link>
                            </li>
                         )}
                         <li>
-                           <Link to="/myaccount" className="block px-4 py-2 rounded-md hover:bg-gray-200">
+                           <Link to="/myaccount" className="font-semibold block px-4 py-2 rounded-md hover:bg-gray-200">
                               My Account
                            </Link>
                         </li>
@@ -100,7 +106,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                            </button>
                         </li> */}
                         <li>
-                           <button onClick={logoutHandler} className="block w-full text-left px-4 py-2 hover:bg-gray-200">
+                           <button onClick={logoutHandler} className="font-semibold block w-full text-left px-4 py-2 hover:bg-gray-200">
                               Logout
                            </button>
                         </li>
@@ -110,7 +116,6 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
             </div>
          </nav>
          <main>{children}</main>
-         {/* <Outlet /> */}
       </div>
    );
 }

@@ -71,7 +71,7 @@ export default function OrdersDashboard() {
          <table className="w-full border-collapse border border-gray-200">
             <thead className="bg-gray-200">
                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left w-[50px]">ID</th>
                   <th className="border border-gray-300 px-4 py-2 text-left">Client</th>
                   <th className="border border-gray-300 px-4 py-2 text-left">Address</th>
                   <th className="border border-gray-300 px-4 py-2 text-left">Products</th>
@@ -92,7 +92,7 @@ export default function OrdersDashboard() {
                         <td className="border border-gray-300 px-4 py-2">{order.address}</td>
                         <td
                            onClick={() => openProductsDetailsModal(order)}
-                           className="border cursor-pointer hover:bg-gray-100 border-gray-300 px-4 py-2"
+                           className="border cursor-pointer bg-blue-100 hover:bg-blue-300 border-blue-300 px-4 py-2"
                         >
                            {order.products?.map((p) => (
                               <div key={p.id}>{p.name}</div>
