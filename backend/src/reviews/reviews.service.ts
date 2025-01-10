@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto';
 import { DBService } from 'src/db/db.service';
+import { Review } from '@prisma/client';
 
 @Injectable()
 export class ReviewsService {
@@ -20,6 +21,15 @@ export class ReviewsService {
   findByProductId(productId: number) {
     return this.db.review.findMany({
       where: { productId },
+      include: {
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            email: true,
+          },
+        },
+      },
     });
   }
 }

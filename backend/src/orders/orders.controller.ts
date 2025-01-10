@@ -38,8 +38,8 @@ export class OrdersController {
 
   @AuthRoles(Role.CLIENT)
   @Patch(':id/cancel')
-  cancelOrder(@Param('id', ParseIntPipe) id: number) {
-    return this.ordersService.cancelOrder(id);
+  cancelOrder(@Param('id', ParseIntPipe) id: number, @GetUser() user: User) {
+    return this.ordersService.cancelOrder(id, user.id);
   }
   @AuthRoles(Role.CLIENT)
   @Post('')

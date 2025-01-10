@@ -5,6 +5,8 @@ import { useHttpErrorHandler } from "../hooks/httpErrorHandler";
 import { useGlobalContext } from "../contexts/GlobalContext";
 import { useSnackbar } from "notistack";
 import { useParams } from "react-router-dom";
+import RatingSelecter from "../components/RatingSelecter";
+import StaticRating from "../components/StaticRating";
 
 type Product = {
    id: number;
@@ -18,6 +20,7 @@ type Review = {
    userId: number;
    reviewText: string;
    rating: number;
+   user: { firstname: string; lastname: string };
 };
 
 export default function ProductPage() {
@@ -45,6 +48,7 @@ export default function ProductPage() {
          .get<Review[]>(`/reviews/${id}`)
          .then((response) => {
             setReviews(response.data);
+            console.log(response.data);
          })
          .catch(handleHttpError);
    };
@@ -130,23 +134,28 @@ export default function ProductPage() {
                   </div>
                </div>
             </div>
-            {/* <div className="w-full bg-white shadow-md rounded-md p-4 mb-[80px]">
-               <div className="text-xl font-bold">Reviews</div>
-               <button className="bg-blue-500" onClick={() => setShowReviewModal(true)}>
-                  add
-               </button>
+            <div className="w-full bg-white shadow-md rounded-md p-4 mb-[80px]">
+               <div className="flex justify-between items-center mb-4">
+                  <div className="text-xl font-bold">Reviews</div>
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={() => setShowReviewModal(true)}>
+                     add
+                  </button>
+               </div>
                <div className="mt-4">
                   {reviews.length > 0 ? (
                      reviews.map((review, index) => (
-                        <div key={index} className="mb-2">
-                           <p>
-                              <strong>Rating:</strong> {review.rating} stars
+                        <div key={index} className="mb-2 border rounded-md p-2">
+                           <p className="flex items-center justify-between">
+                              <strong>{review.user.firstname + " " + review.user.lastname + " "}</strong>
+                              <StaticRating rating={review.rating} />
                            </p>
                            <p>{review.reviewText}</p>
                         </div>
                      ))
                   ) : (
-                     <p>No reviews yet</p>
+                     <div className="flex justify-center items-center p-10">
+                        <p>No reviews yet</p>
+                     </div>
                   )}
                </div>
                {showReviewModal && (
@@ -160,25 +169,29 @@ export default function ProductPage() {
                               value={reviewText}
                               onChange={(e) => setReviewText(e.target.value)}
                            />
-                           <div className="flex mt-2 items-center">
-                              <label className="mr-2">Rating:</label>
-                              <select value={rating} onChange={(e) => setRating(parseInt(e.target.value))} className="p-2 border rounded">
-                                 {[1, 2, 3, 4, 5].map((star) => (
-                                    <option key={star} value={star}>
-                                       {star}
-                                    </option>
-                                 ))}
-                              </select>
+                           <div className="mt-2">
+                              <RatingSelecter
+                                 onChange={(val) => {
+                                    setRating(val);
+                                 }}
+                              />
                            </div>
-                           <button onClick={() => setShowReviewModal(false)}>cancel</button>
-                           <button onClick={handleReviewSubmit} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-                              Submit Review
-                           </button>
+                           <div className="mt-4 flex justify-end gap-2">
+                              <button
+                                 onClick={() => setShowReviewModal(false)}
+                                 className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                              >
+                                 cancel
+                              </button>
+                              <button onClick={handleReviewSubmit} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+                                 Submit Review
+                              </button>
+                           </div>
                         </div>
                      </div>
                   </div>
                )}
-            </div> */}
+            </div>
          </div>
       </Layout>
    );

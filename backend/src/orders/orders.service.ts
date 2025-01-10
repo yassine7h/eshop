@@ -42,57 +42,46 @@ export class OrdersService {
     return allOrders.filter((order) => order.userId === user.id);
   }
 
-  /*async updateStatus(id: number, status: OrderStatus) {
-    const order = this.db.order.findUnique({
-      where: { id },
-    });
-    if (!order) throw new NotFoundException('Order not Found');
-    return this.db.order.update({
-      where: { id },
-      data: { status },
-    });
-  }*/
-
-    async updateStatus(id: number, status: OrderStatus) {
-      const order = await this.db.order.findUnique({
-        where: { id },
-        include: { products: { include: { product: true } } }, // Include products
-      });
-    
-      if (!order) throw new NotFoundException('Order not Found');
-    
-      if (status === OrderStatus.VALIDATED) {
-        // Update product quantities in the database
-        for (const orderProduct of order.products) {
-          const product = orderProduct.product;
-          if (product.stock < orderProduct.quantity) {
-            throw new NotAcceptableException(
-              `Insufficient stock for product: ${product.name}`,
-            );
-          }
-    
-          // Decrement stock
-          await this.db.product.update({
-            where: { id: product.id },
-            data: { stock: product.stock - orderProduct.quantity },
-          });
-        }
-      }
-    
-      return this.db.order.update({
-        where: { id },
-        data: { status },
-      });
-    }
-      
-
-  async cancelOrder(id: number) {
+  async updateStatus(id: number, status: OrderStatus) {
     const order = await this.db.order.findUnique({
       where: { id },
+      include: { products: true },
     });
     if (!order) throw new NotFoundException('Order not Found');
-    if (order.status !== OrderStatus.RESERVED)
+    if (status === OrderStatus.CANCELED || status === OrderStatus.REJECTED) {
+      const updateStockPromises = order.products.map(async (orderProduct) => {
+        await this.db.product.update({
+          where: { id: orderProduct.productId },
+          data: {
+            stock: { increment: orderProduct.quantity },
+          },
+        });
+      });
+      await Promise.all(updateStockPromises);
+    }
+    return this.db.order.update({
+      where: { id },
+      data: { status: status },
+    });
+  }
+
+  async cancelOrder(id: number, userId: number) {
+    const order = await this.db.order.findUnique({
+      where: { id },
+      include: { products: true },
+    });
+    if (!order) throw new NotFoundException('Order not Found');
+    if (order.status !== OrderStatus.RESERVED || order.userId !== userId)
       throw new ForbiddenException('You cannot cancel this Order');
+    const updateStockPromises = order.products.map(async (orderProduct) => {
+      await this.db.product.update({
+        where: { id: orderProduct.productId },
+        data: {
+          stock: { increment: orderProduct.quantity },
+        },
+      });
+    });
+    await Promise.all(updateStockPromises);
     return this.db.order.update({
       where: { id },
       data: { status: OrderStatus.CANCELED },
@@ -102,13 +91,11 @@ export class OrdersService {
   async newOrder(order: { address: string; cartId: number }, user: User) {
     const cart = await this.db.cart.findUnique({
       where: { id: order.cartId },
-      include: { products: { include: { product: true } } }, // Include products with details
+      include: { products: { include: { product: true } } },
     });
-
     if (!cart) {
       throw new NotFoundException('Cart not found');
     }
-
     if (cart.products.length === 0) {
       throw new NotAcceptableException(
         'Cart is empty. Cannot create an order.',
@@ -124,21 +111,59 @@ export class OrdersService {
         address: order.address,
       },
     });
-
     const orderProducts = cart.products.map((cartProduct) => ({
-      orderId: createdOrder.id, // Link to the created order
-      productId: cartProduct.product.id, // Link to the product
-      quantity: cartProduct.quantity, // Save the quantity
+      orderId: createdOrder.id,
+      productId: cartProduct.product.id,
+      quantity: cartProduct.quantity,
     }));
-
     await this.db.orderProduct.createMany({
       data: orderProducts,
     });
-
     await this.db.cartProduct.deleteMany({
       where: { cartId: cart.id },
     });
-
     return createdOrder;
   }
+  // async updateStatus(id: number, status: OrderStatus) {
+  //   const order = this.db.order.findUnique({
+  //     where: { id },
+  //   });
+  //   if (!order) throw new NotFoundException('Order not Found');
+  //   return this.db.order.update({
+  //     where: { id },
+  //     data: { status },
+  //   });
+  // }
+
+  // async updateStatus(id: number, status: OrderStatus) {
+  //   const order = await this.db.order.findUnique({
+  //     where: { id },
+  //     include: { products: { include: { product: true } } }, // Include products
+  //   });
+
+  //   if (!order) throw new NotFoundException('Order not Found');
+
+  //   if (status === OrderStatus.VALIDATED) {
+  //     // Update product quantities in the database
+  //     for (const orderProduct of order.products) {
+  //       const product = orderProduct.product;
+  //       if (product.stock < orderProduct.quantity) {
+  //         throw new NotAcceptableException(
+  //           `Insufficient stock for product: ${product.name}`,
+  //         );
+  //       }
+
+  //       // Decrement stock
+  //       await this.db.product.update({
+  //         where: { id: product.id },
+  //         data: { stock: product.stock - orderProduct.quantity },
+  //       });
+  //     }
+  //   }
+
+  //   return this.db.order.update({
+  //     where: { id },
+  //     data: { status },
+  //   });
+  // }
 }
