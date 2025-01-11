@@ -10,6 +10,8 @@ Créer les fichiers `.env` de frontend et backend à partir des fichiers `.env.e
 
 Exécutez cette commande dans le dossier backend :
 
+NB : Il faut bien saisir les bons crédentiels de la base de données sur le fichier .env
+
 ```bash
 npx prisma migrate dev
 ```
@@ -31,6 +33,10 @@ npm run start:dev
 ### Lancer le serveur frontend
 
 Exécutez cette commande dans le dossier frontend :
+
+```bash
+npm install
+```
 
 ```bash
 npm run dev
