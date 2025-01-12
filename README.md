@@ -206,6 +206,14 @@ Les clients peuvent consulter les détails de leurs commandes et imprimer une fa
 
 ![Screenshot 6 - Détails des commandes](screenshots/myordersClient.png)
 
+En cliquant sur la commande:
+
+![Screenshot 6bis - Print invoice](screenshots/clique.png)
+
+![Screenshot 6bis_ - Print invoice](screenshots/print.png)
+
+![Screenshot 6bis__ - Print invoice](screenshots/invoice.png)
+
 ---
 
 ### **7. Modification des coordonnées personnelles
