@@ -38,7 +38,7 @@ npm run dev
 
 ## Lancer l'application avec Docker
 
-L'application est entièrement dockerisée pour simplifier le déploiement. Voici les étapes pour exécuter les conteneurs Docker.
+L'application est entièrement dockerisée pour simplifier le développement. Voici les étapes pour exécuter les conteneurs Docker.
 
 NB: Assurez-vous que Docker et Docker Compose sont installés sur votre machine.
 
