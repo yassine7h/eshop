@@ -225,7 +225,7 @@ Les utilisateurs peuvent modifier leurs informations:
 
 ![Screenshot 7bis - Modifier informations admin/seller](screenshots/modifierSS.png)
 
-![Screenshot 8 - Modifier informations client](screenshots/modfierC.png)
+![Screenshot 8 - Modifier informations client](screenshots/modifierC.png)
 
 
 ### **8. Authorized Page
