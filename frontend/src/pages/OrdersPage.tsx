@@ -66,6 +66,128 @@ export default function OrdersPage() {
       setShowProductsDetailsModal(false);
    };
 
+   const handlePrint = () => {
+      const printWindow = window.open("", "", "height=500,width=800");
+      if (printWindow) {
+         printWindow.document.write("<html><head><title>Eshop Invoice</title>");
+         printWindow.document.write(`
+          <style>
+             body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f4f4f4;
+                color: #333;
+             }
+             .invoice-container {
+                background-color: #fff;
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                max-width: 700px;
+                margin: auto;
+             }
+             h1, h2, h3 {
+                font-family: 'Helvetica', sans-serif;
+                color: #2C3E50;
+             }
+             h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+                text-align: center;
+             }
+             .order-details {
+                margin-bottom: 30px;
+                border-bottom: 2px solid #ddd;
+                padding-bottom: 10px;
+             }
+             .order-details div {
+                font-size: 16px;
+                margin-bottom: 8px;
+             }
+             .order-details .total {
+                font-size: 18px;
+                font-weight: bold;
+                color: #E74C3C;
+                text-align: right;
+                margin-top: 10px;
+             }
+             table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+             }
+             table th, table td {
+                border: 1px solid #ddd;
+                padding: 8px 12px;
+                text-align: left;
+             }
+             table th {
+                background-color: #3498db;
+                color: white;
+             }
+             .footer {
+                text-align: center;
+                margin-top: 40px;
+                font-size: 14px;
+                color: #7f8c8d;
+             }
+          </style>
+       `);
+         printWindow.document.write("</head><body>");
+         printWindow.document.write(`
+          <div class="invoice-container">
+             <h1>Invoice</h1>
+             <div class="order-details">
+                <div><strong>Order Number:</strong> #${selectedOrder?.id}</div>
+                <div><strong>Date:</strong> ${new Date().toLocaleDateString()}</div>
+                <div><strong>Shipping Address:</strong> ${selectedOrder?.address}</div>
+             </div>
+             <h2>Products</h2>
+             <table>
+                <thead>
+                   <tr>
+                      <th>#</th>
+                      <th>Product Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
+                   </tr>
+                </thead>
+                <tbody>
+                   ${selectedOrder?.products
+                      .map(
+                         (p) => `
+                      <tr>
+                         <td>${p.id}</td>
+                         <td>${p.name}</td>
+                         <td>$${p.price.toFixed(2)}</td>
+                         <td>${p.quantity}</td>
+                         <td>$${(p.quantity * p.price).toFixed(2)}</td>
+                      </tr>
+                   `
+                      )
+                      .join("")}
+                </tbody>
+             </table>
+             <div class="total">
+                Total: $${selectedOrder?.products.reduce((total, p) => total + p.quantity * p.price, 0).toFixed(2)}
+             </div>
+             <div class="footer">
+                Thank you for your purchase! <br/>
+                <small>Eshop | Bourges | 0100110200</small>
+             </div>
+          </div>
+       `);
+
+         printWindow.document.write("</body></html>");
+         printWindow.document.close();
+         printWindow.print();
+      } else {
+         console.error("Failed to open print window");
+      }
+   };
+
    return (
       <Layout>
          <div className="w-full bg-gray-100 flex flex-col items-center p-8">
@@ -186,6 +308,9 @@ export default function OrdersPage() {
                            <div className="mt-4 flex w-full justify-end">
                               <button onClick={closeProductsDetailsModal} className="mr-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md">
                                  Close
+                              </button>
+                              <button onClick={handlePrint} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">
+                                 Print Invoice
                               </button>
                            </div>
                         </div>

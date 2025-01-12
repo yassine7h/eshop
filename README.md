@@ -125,4 +125,5 @@ Permet d'accéder facilement aux informations de l'utilisateur connecté :
    -  Modifier le contenu de son panier.
    -  Passer une commande à partir de son panier avec son adresse principale ou une adresse spécifique.
    -  Annuler une commande avant qu'elle soit traitée par le vendeur (ou l'administrateur).
+   -  Le client peut récupérer la facture de sa commande à partir de `/orders` en cliquant sur la commande en question pour voir ses détails et l'imprimer.
    -  Noter un produit et laisser un commentaire.
