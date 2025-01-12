@@ -129,7 +129,7 @@ Permet d'accéder facilement aux informations de l'utilisateur connecté :
 
 ## Diagramme de classes
 
-![Screenshot 9 - Digramme de classe](screenshots/diagram.png)
+![Screenshot 9 - Digramme de classe](screenshots/diagram.jpg)
 
 ## Les fonctionnalités de l'application
 
