@@ -30,19 +30,6 @@ Cette commande démarre tous les services nécessaires :
 
 Une fois que tout est en place, l'application est accessible sur http://localhost:5173
 
-#### Authentification et Autorisation
-
-Deux comptes utilisateurs sont déjà existants dans la base de données pour les tests :
-
-Compte administrateur avec tous les privilèges (admin, client, vendeur) :
-
-Email : allroles@eshop.com
-Mot de passe : 0000
-
-Compte client simple :
-
-Email : client@eshop.com
-Mot de passe : 0000
 
 ### Arrêter mes conteneurs
 
@@ -91,7 +78,25 @@ npm run dev
 
 ## Authentification et Autorisation
 
-### Fonctionnalités
+Un unique compte avec le role SUPADMIN est créé dès la migration de la base de données:
+
+Email : supadmin@eshop.com
+Mot de passe : 0000
+
+Ainsi que deux autres comptes utilisateurs sont déjà existants dans la base de données pour les tests :
+
+Compte administrateur avec tous les privilèges (admin, client, vendeur) :
+
+Email : allroles@eshop.com
+Mot de passe : 0000
+
+Compte client simple :
+
+Email : client@eshop.com
+Mot de passe : 0000
+
+
+### Mécanisme d'authentification et d'autorisation
 
 #### Inscription (`/auth/signup`)
 
@@ -119,11 +124,9 @@ npm run dev
 
 #### Gestion des rôles
 
--  Différents rôles utilisateur (exemple : `ADMIN`, `CLIENT`, `SELLER`) pour restreindre l'accès aux fonctionnalités spécifiques.
+-  Différents rôles utilisateur (exemple : `SUPADMIN`, `ADMIN`, `CLIENT`, `SELLER`) pour restreindre l'accès aux fonctionnalités spécifiques.
 
-### Structure des fichiers
-
-#### 1. `AuthController`
+#### `AuthController`
 
 Ce contrôleur gère les endpoints suivants :
 
@@ -131,7 +134,7 @@ Ce contrôleur gère les endpoints suivants :
 
 -  **POST `/auth/login`** : Connecte un utilisateur existant.
 
-#### 2. `AuthService`
+#### `AuthService`
 
 Service contenant la logique métier pour :
 
@@ -141,13 +144,13 @@ Service contenant la logique métier pour :
 
 -  Valider les rôles des utilisateurs.
 
-#### 3. DTOs (Data Transfer Objects)
+#### DTOs (Data Transfer Objects)
 
 -  **`SignupDTO`** : Valide les données d'inscription (email, mot de passe, prénom, etc.).
 
 -  **`LoginDTO`** : Valide les données de connexion (email, mot de passe).
 
-#### 4. JWT Strategy
+#### JWT Strategy
 
 Stratégie pour valider les tokens JWT :
 
@@ -157,7 +160,7 @@ Stratégie pour valider les tokens JWT :
 
 -  Ajoute les données de l'utilisateur à la requête.
 
-#### 5. Décorateur `@AuthRoles`
+#### Décorateur `@AuthRoles`
 
 Permet de restreindre l'accès à certaines routes selon les rôles. Exemple :
 
@@ -169,7 +172,7 @@ getDashboard() {
 }
 ```
 
-#### 6. Décorateur `@GetUser`
+#### Décorateur `@GetUser`
 
 Permet d'accéder facilement aux informations de l'utilisateur connecté :
 
@@ -185,6 +188,8 @@ Permet d'accéder facilement aux informations de l'utilisateur connecté :
 ![Screenshot 9 - Digramme de classe](screenshots/diagram.jpg)
 
 ## Les fonctionnalités de l'application
+
+-  Un superadmin qui peut activer et désactiver les comptes des utilisateurs ayant les rôles `ADMIN` et/ou `SELLER`.
 
 -  Un vendeur peut valider ou refuser les commandes passées par des clients.
 
