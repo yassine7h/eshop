@@ -23,6 +23,8 @@ export class AuthService {
     if (!user) throw new ForbiddenException('Credentials incorrect');
     const pwMatches = await argon.verify(user.password, body.password);
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+    if (user.isActive === false)
+      throw new ForbiddenException('User is not active');
     delete user.password;
     return { jwt_token: await this.signToken(user.id, user.email), user: user };
   }
@@ -32,12 +34,14 @@ export class AuthService {
     const roles: Role[] = Array.isArray(body.roles)
       ? body.roles
       : JSON.parse(body.roles);
+    const isOnlyClient = roles.length === 1 && roles[0] === Role.CLIENT;
     const data: any = {
       email: body.email,
       password: hashedPassword,
       firstname: body.firstname,
       lastname: body.lastname,
       roles: roles,
+      isActive: isOnlyClient,
     };
     if (roles.includes(Role.CLIENT)) data.address = body.address;
     try {
@@ -54,10 +58,17 @@ export class AuthService {
         });
       }
       delete user.password;
-      return {
-        jwt_token: await this.signToken(user.id, user.email),
-        user: user,
-      };
+      if (isOnlyClient) {
+        return {
+          jwt_token: await this.signToken(user.id, user.email),
+          user: user,
+        };
+      } else {
+        return {
+          message:
+            'User created successfully, but not active, wait for super admin to activate your account',
+        };
+      }
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002')

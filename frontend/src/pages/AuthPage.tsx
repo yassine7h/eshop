@@ -29,6 +29,8 @@ export default function AuthPage() {
    const navigate = useNavigate();
 
    const [isLogin, setIsLogin] = useState(true);
+   const [showMessage, setShowMessage] = useState(false);
+   const [message, setMessage] = useState("");
 
    const {
       register,
@@ -53,8 +55,15 @@ export default function AuthPage() {
    };
    const handleAath = (response: AxiosResponse<unknown, any>) => {
       const data = response?.data as any;
+      if (data?.message) {
+         setIsLogin(true);
+         setMessage(data.message);
+         setShowMessage(true);
+         return;
+      }
       const user: User = data.user;
       const isClient = user.roles.includes("CLIENT");
+      const isSupAdmin = user.roles.includes("SUPADMIN");
       http.setToken(data.jwt_token);
       if (isClient) {
          http
@@ -66,10 +75,11 @@ export default function AuthPage() {
                setUser(user);
                navigate("/shop");
             });
-      } else {
-         setUser(user);
-         navigate("/dashboard");
+         return;
       }
+      setUser(user);
+      if (isSupAdmin) navigate("/superadmin");
+      else navigate("/dashboard");
    };
 
    return (
@@ -178,6 +188,24 @@ export default function AuthPage() {
                </button>
             </p>
          </div>
+         {showMessage && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+               <div className="bg-white p-6 rounded-md shadow-lg w-[500px]">
+                  <h2 className="text-xl font-bold mb-4">Message</h2>
+                  <div>{message}</div>
+                  <div className="mt-4 flex justify-end">
+                     <button
+                        onClick={() => {
+                           setShowMessage(false);
+                        }}
+                        className="mr-4 px-4 py-2 bg-green-400 hover:bg-green-500 rounded-md"
+                     >
+                        Ok
+                     </button>
+                  </div>
+               </div>
+            </div>
+         )}
       </div>
    );
 }

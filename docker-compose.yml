@@ -29,14 +29,17 @@ services:
          - PIC_PATH=./files
       depends_on:
          - db-dev
-      healthcheck:
-         test: ["CMD", "bash", "-c", "pg_isready -h db-dev -p 5432 || exit 1"]
-         interval: 30s
-         retries: 5
       command: >
-         sh -c "npx prisma migrate dev &&
-              node ./prisma/seed.js &&
-              npm run start:dev -- --host"
+         sh -c "
+            until pg_isready -h db-dev -p 5432; do
+               echo 'Waiting for database...'
+               sleep 2
+            done
+            echo 'Database is ready!'
+            npx prisma migrate dev &&
+            node ./prisma/seed.js &&
+            npm run start:dev -- --host
+         "
       networks:
          - internal-network
 

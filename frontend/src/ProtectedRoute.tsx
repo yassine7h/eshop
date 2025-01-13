@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
    roles: Role[];
    component: React.ComponentType;
 }
-export type Role = "ADMIN" | "SELLER" | "CLIENT";
+export type Role = "ADMIN" | "SELLER" | "CLIENT" | "SUPADMIN";
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roles, component: Component }) => {
    const { value } = useGlobalContext();

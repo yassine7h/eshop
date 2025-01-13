@@ -12,6 +12,7 @@ import ShopPage from "./pages/ShopPage.tsx";
 import CartPage from "./pages/CartPage.tsx";
 import OrdersPage from "./pages/OrdersPage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard.tsx";
 
 const router = createBrowserRouter([
    {
@@ -43,8 +44,12 @@ const router = createBrowserRouter([
       element: <ProtectedRoute roles={["ADMIN", "SELLER"]} component={DashboardPage} />,
    },
    {
+      path: "/superadmin",
+      element: <ProtectedRoute roles={["SUPADMIN"]} component={SuperAdminDashboard} />,
+   },
+   {
       path: "/myaccount",
-      element: <ProtectedRoute roles={["ADMIN", "SELLER", "CLIENT"]} component={MyAccountPage} />,
+      element: <ProtectedRoute roles={["ADMIN", "SELLER", "CLIENT", "SUPADMIN"]} component={MyAccountPage} />,
    },
    {
       path: "/unauthorized",

@@ -11,6 +11,7 @@ enum Role {
   ADMIN
   CLIENT
   SELLER
+  SUPADMIN
 }
 
 model User {
@@ -24,6 +25,7 @@ model User {
   lastname  String
   address   String?
   roles     Role[]
+  isActive  Boolean @default(false)
 
   cart    Cart?
   orders  Order[]

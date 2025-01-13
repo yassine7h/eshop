@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'CLIENT', 'SELLER');
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'CLIENT', 'SELLER', 'SUPADMIN');
 
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('RESERVED', 'VALIDATED', 'CANCELED', 'REJECTED');
@@ -15,6 +15,7 @@ CREATE TABLE "User" (
     "lastname" TEXT NOT NULL,
     "address" TEXT,
     "roles" "Role"[],
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

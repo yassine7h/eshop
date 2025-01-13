@@ -21,4 +21,37 @@ export class UsersService {
     delete user.password;
     return user;
   }
+
+  async getAllUsers() {
+    const users = await this.db.user.findMany({
+      where: {
+        NOT: {
+          roles: {
+            has: 'SUPADMIN',
+          },
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        firstname: true,
+        lastname: true,
+        address: true,
+        roles: true,
+        createdAt: true,
+        updatedAt: true,
+        password: false,
+        isActive: true,
+      },
+      orderBy: { id: 'asc' },
+    });
+    return users;
+  }
+
+  async toggleIsActive(userId: number, isActive: boolean) {
+    await this.db.user.update({
+      where: { id: userId },
+      data: { isActive },
+    });
+  }
 }
