@@ -1,6 +1,59 @@
-# Explication du Code
-
 ## Configuration de l'environnement de développement
+
+## Avec Docker
+
+L'application est entièrement dockerisée pour simplifier le développement. Voici les étapes pour exécuter les conteneurs Docker.
+
+NB: Assurez-vous que Docker et Docker Compose sont installés sur votre machine.
+
+### Construire les images Docker
+
+Dans le dossier racine du projet (où se trouvent vos fichiers docker-compose.yml), exécutez la commande suivante pour construire les images :
+
+```bash
+docker-compose build
+```
+
+### Démarrer les conteneurs
+
+Pour démarrer l'application, exécutez :
+
+```bash
+docker-compose up
+```
+
+Cette commande démarre tous les services nécessaires :
+
+-  Le serveur backend (Nest.js)
+-  Le serveur frontend (React)
+-  La base de données PostgreSQL
+
+Une fois que tout est en place, l'application est accessible sur http://localhost:5173
+
+#### Authentification et Autorisation
+
+Deux comptes utilisateurs sont déjà existants dans la base de données pour les tests :
+
+Compte administrateur avec tous les privilèges (admin, client, vendeur) :
+
+Email : allroles@eshop.com
+Mot de passe : 0000
+
+Compte client simple :
+
+Email : client@eshop.com
+Mot de passe : 0000
+
+### Arrêter mes conteneurs
+
+Pour arrêter les conteneurs, exécutez :
+
+```bash
+docker-compose down
+
+```
+
+## Sans Docker
 
 ### Les fichiers `.env`
 
@@ -35,60 +88,6 @@ Exécutez cette commande dans le dossier frontend :
 ```bash
 npm run dev
 ```
-
-## Lancer l'application avec Docker
-
-L'application est entièrement dockerisée pour simplifier le développement. Voici les étapes pour exécuter les conteneurs Docker.
-
-NB: Assurez-vous que Docker et Docker Compose sont installés sur votre machine.
-
-### Construire les images Docker
-
-Dans le dossier racine du projet (où se trouvent vos fichiers docker-compose.yml), exécutez la commande suivante pour construire les images :
-
-```bash
-docker-compose build
-```
-
-### Démarrer les conteneurs
-
-Pour démarrer l'application, exécutez :
-
-```bash
-docker-compose up
-```
-
-Cette commande démarre tous les services nécessaires :
-
-- Le serveur backend (Node.js + Prisma)
-- Le serveur frontend (React/Next.js)
-- La base de données PostgreSQL
-
-Une fois que tout est en place, l'application est accessible sur http://localhost:5173
-
-#### Authentification et Autorisation
-Deux comptes utilisateurs sont déjà existants dans la base de données pour les tests :
-
-Compte administrateur avec tous les privilèges (admin, client, vendeur) :
-
-Email : allroles@eshop.com
-Mot de passe : 0000
-
-Compte client simple :
-
-Email : client@eshop.com
-Mot de passe : 0000
-
-### Arrêter mes conteneurs
-
-Pour arrêter les conteneurs, exécutez :
-
-```bash
-docker-compose down
-
-```
-
-
 
 ## Authentification et Autorisation
 
@@ -235,8 +234,7 @@ Le tableau de bord des vendeurs affiche les commandes en attente, les produits e
 
 ![Screenshot 3bis - Dashboard pour les vendeurs/admins](screenshots/adminProducts.png)
 
-![Screenshot 3bis_ - Dashboard pour les vendeurs/admins](screenshots/adminOrders2.png)
----
+## ![Screenshot 3bis_ - Dashboard pour les vendeurs/admins](screenshots/adminOrders2.png)
 
 ### **4. Gestion du panier pour les clients**
 
@@ -254,7 +252,6 @@ Le client peut noter un produit et laisser un commentaire:
 
 ![Screenshot 5 - Product review](screenshots/productreview.png)
 
-
 ### **6. Détails des commandes**
 
 Les clients peuvent consulter les détails de leurs commandes et imprimer une facture :
@@ -269,10 +266,9 @@ En cliquant sur la commande (la case bleue):
 
 ---
 
-### **7. Modification des coordonnées personnelles
+### \*\*7. Modification des coordonnées personnelles
 
 Les utilisateurs peuvent modifier leurs informations:
-
 
 ![Screenshot 7 - Modifier informations admin/seller](screenshots/modifierS.png)
 
@@ -280,8 +276,7 @@ Les utilisateurs peuvent modifier leurs informations:
 
 ![Screenshot 8 - Modifier informations client](screenshots/modifierC.png)
 
-
-### **8. Authorized Page
+### \*\*8. Authorized Page
 
 Cette page a pour but de démontrer que l'admin/seller n'a pas le droit de consulter un panier (le clique sur My Cart é My Orders), d'où l'affichage de ce message:
 
